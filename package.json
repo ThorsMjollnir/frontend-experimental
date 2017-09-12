@@ -4,8 +4,8 @@
   "description": "",
   "main": "intake24.js",
   "devDependencies": {
-    "@types/react-bootstrap": "0.0.50",
-    "@types/react-dom": "^15.5.0",
+    "@types/react": "15.6.x",
+    "@types/react-dom": "15.5.x",
     "babel-core": "^6.24.1",
     "babel-loader": "^7.0.0",
     "babel-preset-env": "^1.5.1",
@@ -24,14 +24,10 @@
     "dev-server": "webpack-dev-server --content-base build/"
   },
   "dependencies": {
-    "@types/react": "^15.0.27",
-    "@types/rx": "^4.1.1",
-    "@types/rx-dom": "^7.0.0",
-    "bootstrap": "^3.3.7",
-    "react": "^15.5.4",
-    "react-bootstrap": "^0.31.0",
-    "react-dom": "^15.5.4",
-    "rx": "4.1.0",
-    "rx-dom": "^7.0.3"
+    "jquery": "3.2.x",
+    "popper.js": "1.12.x",
+    "bootstrap": "v4.0.0-beta",
+    "react": "15.6.x",
+    "react-dom": "15.6.x"
   }
 }
