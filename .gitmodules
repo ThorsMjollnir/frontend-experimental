@@ -10,3 +10,8 @@
 	path = api-shared
 	url = git@github.com:intake24/api-shared
 	branch = master
+[submodule "redux-client"]
+	path = redux-client
+	url = git@github.com:intake24/redux-client
+	branch = master
+
