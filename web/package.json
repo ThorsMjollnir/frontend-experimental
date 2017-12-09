@@ -25,13 +25,15 @@
   },
   "dependencies": {
     "bootstrap": "v4.0.0-beta",
+    "intake24-redux-client": "0.1.0",
     "jquery": "3.2.x",
     "popper.js": "^1.12.9",
     "portfinder": "^1.0.13",
     "react": "^15.6.2",
     "react-dom": "^15.6.2",
+    "react-redux": "^5.0.6",
     "readdirp": "^2.1.0",
-    "typescript-collections": "1.2.x",
-    "intake24-redux-client": "0.1.0"
+    "redux": "^3.7.2",
+    "typescript-collections": "1.2.x"
   }
 }

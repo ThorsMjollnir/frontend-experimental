@@ -1,42 +1,20 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import {Store, createStore, combineReducers} from "redux";
 
-import {ListContainer} from "./components/list-test";
-import {Observable, Subject} from "rxjs";
+import {Toolbox} from "intake24-redux-client";
 
+let toolbox = new Toolbox("intake24.toolbox");
 
-export class AddItem {
-    name: string
+let store = createStore(
+    combineReducers({
+        "intake24.toolbox": toolbox.getReducer()
+    }),
+    window["__REDUX_DEVTOOLS_EXTENSION__"] && window["__REDUX_DEVTOOLS_EXTENSION__"]()
+);
 
-    constructor(name: string) {
-        this.name = name;
-    }
-
-}
-
-export class DeleteItem {
-    index: number
-
-    constructor(index: number) {
-        this.index = index;
-    }
-}
-
-
-let addItemStream = new Subject<AddItem>();
-
-let deleteItemStream = new Subject<DeleteItem>();
-
-let actionStream = addItemStream.merge(deleteItemStream);
-
-let currentItems = Observable.of(["пиьска"]);
-
-let o = new AddItem("123")
-
-setInterval(() => addItemStream.next(new AddItem(Math.random().toString())), 1000);
-setInterval(() => deleteItemStream.next(new DeleteItem(Math.random())), 1000);
+let selector = toolbox.init(store);
 
 ReactDOM.render(
-    <ListContainer items={currentItems} newItem={addItemStream}
-                   deleteItem={deleteItemStream}/>, document.getElementById("root")
+    <div/>, document.getElementById("root")
 );
