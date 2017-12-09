@@ -1,6 +1,16 @@
 Setup for local development
 ---------------------------------
 
+`git clone --recursive`
+
+or
+
+````
+git clone
+git submodule init
+git submodule update
+````
+
 1. Create the initial npm package with sbt:
 
 `sbt apiClientJS/packageForNpm`
