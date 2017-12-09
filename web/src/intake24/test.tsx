@@ -22,18 +22,6 @@ export class DeleteItem {
     }
 }
 
-export type Action = AddItem | DeleteItem
-
-class T {
-    test(a: AddItem) {
-        console.log(a);
-    }
-
-    test(b: DeleteItem) {
-        console.log(b);
-    }
-}
-
 
 let addItemStream = new Subject<AddItem>();
 
