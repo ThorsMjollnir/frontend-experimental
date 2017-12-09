@@ -1,0 +1,12 @@
+[submodule "RosHTTP"]
+	path = RosHTTP
+	url = git@github.com:intake24/RosHTTP.git
+	branch = master
+[submodule "api-client"]
+	path = api-client
+	url = git@github.com:intake24/api-client
+	branch = master
+[submodule "api-shared"]
+	path = api-shared
+	url = git@github.com:intake24/api-shared
+	branch = master

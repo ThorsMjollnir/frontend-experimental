@@ -1,5 +1,5 @@
 {
-  "name": "intake24",
+  "name": "intake24-frontend-experimental",
   "version": "4.0.0",
   "description": "",
   "main": "intake24.js",
@@ -24,7 +24,6 @@
     "dev-server": "webpack-dev-server --content-base build/"
   },
   "dependencies": {
-    "rxjs": "^5.5.2",
     "bootstrap": "v4.0.0-beta",
     "jquery": "3.2.x",
     "popper.js": "^1.12.9",
@@ -32,6 +31,7 @@
     "react": "^15.6.2",
     "react-dom": "^15.6.2",
     "readdirp": "^2.1.0",
-    "typescript-collections": "1.2.x"
+    "typescript-collections": "1.2.x",
+    "intake24-redux-client": "0.1.0"
   }
 }
