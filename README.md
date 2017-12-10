@@ -33,7 +33,7 @@ npm link intake24-redux-client
 4. Start sbt in watch mode to automatically rebuild the JavaScript module:
 
 ````
-sbt ~apiClientJS/packageForNpm 
+sbt ~reduxClient/packageForNpm 
 ````
 
 5. Start the webpack development server
