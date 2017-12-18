@@ -29,8 +29,10 @@ let store = createStore(
 
 Toolbox.init("http://localhost:9001", store, "intake24");
 
+
 export interface AppProps {
-    dispatch: Dispatch<{}>;
+    foodSearch: any;
+    result: any;
 }
 
 export interface AppState {
@@ -54,7 +56,7 @@ class App extends Component<AppProps, AppState> {
                 clearTimeout(prevState.timeoutId);
 
             let newTimeoutId = text.length == 0 ? null : setTimeout(() => {
-                this.props.dispatch({type: "KOTAKBAS!"});
+                this.props.foodSearch.search(text);
             }, 500);
 
             return {
@@ -64,23 +66,38 @@ class App extends Component<AppProps, AppState> {
         });
     }
 
+    renderResults() {
+        if (this.props.result.foods.length != 0)
+            return <ul>
+                {this.props.result.foods.map(f => <li>{f.localDescription}</li>)}
+            </ul>
+        else
+            return <p>No results.</p>
+    }
+
     render() {
         return <div>
-            <input type="text" value={this.state.searchText} onChange={this.searchTextChanged.bind(this)}/>
+            <div>
+                <input type="text" value={this.state.searchText} onChange={this.searchTextChanged.bind(this)}/>
+            </div>
+            <div>
+                {this.renderResults()}
+            </div>
         </div>
     }
 }
 
 export const AppConnected = connect(state => {
-    return {}
+    return {
+        searchPending: state.intake24.foodSearch.searchPending,
+        result: state.intake24.foodSearch.result
+    }
 })(App);
 
 
 export interface LoginFormProps {
-    email: string;
-    password: string;
-    signinClicked: boolean;
-    authStore: any;
+    requestPending: boolean;
+    auth: any;
 }
 
 export interface LoginFormState {
@@ -93,44 +110,55 @@ class LoginForm extends Component<LoginFormProps, LoginFormState> {
     constructor(props) {
         super(props);
 
-        this.state = {email: props.email, password: props.password};
+        this.state = {email: "", password: ""};
     }
 
     onSigninClicked() {
-        this.props.authStore.signin(this.state.email, this.state.password);
+
+        console.log(this.state);
+
+        this.props.auth.signin(this.state.email, this.state.password);
     }
 
-    onEmailChanged(text) {
-        this.setState( prevState => { return { email: text }; } )
+    onEmailChanged(event) {
+
+        console.log(event.target.value);
+
+        this.setState({email: event.target.value});
+
     }
 
-    onPasswordChanged(text) {
-        this.setState( prevState => { return { password: text }; } )
+    onPasswordChanged(event) {
+        this.setState({password: event.target.value});
     }
 
     render() {
+
         return <div>
-            E-mail: <input type="text" value={this.state.email} onChange={ evt => this.onEmailChanged.bind(this)(evt.target.value)}/>
-            Password: <input type="text" value={this.state.password} onChange={ evt => this.onPasswordChanged.bind(this)(evt.target.value)}/>
-            <input type="button" value="Sign in" onClick={this.onSigninClicked.bind(this)}/>
+            E-mail: <input type="text" value={this.state.email}
+                           onChange={this.onEmailChanged.bind(this)}/>
+            Password: <input type="text" value={this.state.password}
+                             onChange={this.onPasswordChanged.bind(this)}/>
+            <input disabled={this.props.requestPending} type="button" value="Sign in"
+                   onClick={this.onSigninClicked.bind(this)}/>
         </div>
     }
 }
 
-export const LoginFormConnected = connect( state => {
+export const LoginFormConnected = connect(state => {
 
     return {
-        email: state.intake24.auth.credentials.email,
-        password: state.intake24.auth.credentials.password,
-        signinClicked: state.intake24.auth.signinClicked
+        requestPending: state.intake24.auth.signinRequestPending
     }
 })(LoginForm);
 
 
 ReactDOM.render(
     <Provider store={store}>
-        <LoginFormConnected authStore={Toolbox.authStore}/>
-
+        <div>
+            <LoginFormConnected auth={Toolbox.auth}/>
+            <AppConnected foodSearch={Toolbox.foodSearch}/>
+        </div>
     </Provider>,
     document.getElementById('root')
 );
