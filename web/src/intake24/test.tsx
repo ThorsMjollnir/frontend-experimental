@@ -6,7 +6,7 @@ import {Router, Route} from "react-router";
 import {ConnectedRouter, routerReducer, routerMiddleware, push} from "react-router-redux";
 import createHistory from 'history/createBrowserHistory'
 
-import {Toolbox} from "intake24-redux-client";
+import {Client, FoodSearch, ClientReducer, FoodSearchReducer, LookupResult} from "intake24-redux-client";
 import {Component} from "react";
 
 let key = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJleUp3Y205MmFXUmxja2xFSWpvaVpXMWhhV3dpTENKd2NtOTJhV1JsY2t0bGVTSTZJbUZ3YVRGQVpHa3RkR1Z6ZEM1amIyMGlmUT09IiwiaXNzIjoiaW50YWtlMjQiLCJleHAiOjE2NzA3NzE4MzYsInR5cGUiOiJyZWZyZXNoIiwiaWF0IjoxNTEzMDkxODM2LCJ1c2VySWQiOjE4MTMxLCJqdGkiOiJjMTc3ODliZTE4ZmJiMjlhNWVjYWVjODk3MjViMWVjNjdkNzdkZTIzYzM4YWM2YWNkMDI1ZTJjMjFjODQ0OWE0MWRiODM2MDI3YzNkNjYyNjA5MDU2ZTY1NDdkYTQ3MjlkYzJlMmVmNWUxODMwMWEzYzNhYjExMzYxM2ZlYWU1MjU4ZWFiYjNlZjlhNWRjMzZiZjA2YTQ4YzM5MzA5YjgwYWE5YzkzODdiYjdiNGE1YjczODZiYzEzYWY5ZjkyMDNhNDA4ZWNhMjZiM2Q1N2E1MzYzMjYxODNkMjIwMmY3NTA1NmYwYzQ2M2VmZWJlNTMwMmU5ZDRkNmM1MTZhMGE4In0._hxZfuK-pQHxJR8CTEdqygEa9sW27cVynaULa3Gsu1I"
@@ -20,19 +20,27 @@ let composeEnhancers = window["__REDUX_DEVTOOLS_EXTENSION_COMPOSE__"] || compose
 let store = createStore(
     combineReducers({
         router: routerReducer,
-        intake24: Toolbox.createReducer()
+        intake24: combineReducers({
+                "client": ClientReducer.create(),
+                "foodSearch": FoodSearchReducer.create()
+            }
+        )
     }),
     composeEnhancers(
         applyMiddleware(
             routerMiddleware(history)))
 );
 
-Toolbox.init("http://localhost:9001", store, "intake24");
+let intakeClient = new Client(store, ["intake24", "client"]);
 
+intakeClient.init("http://localhost:9001");
+intakeClient.setRefreshToken(key);
+
+let foodSearch = new FoodSearch(store, intakeClient, ["intake24", "foodSearch"]);
 
 export interface AppProps {
-    foodSearch: any;
-    result: any;
+    foodSearch: FoodSearch;
+    result: LookupResult;
 }
 
 export interface AppState {
@@ -87,17 +95,19 @@ class App extends Component<AppProps, AppState> {
     }
 }
 
-export const AppConnected = connect(state => {
+export const AppConnected = connect(s => {
+
+    let state = foodSearch.getState();
     return {
-        searchPending: state.intake24.foodSearch.searchPending,
-        result: state.intake24.foodSearch.result
+        searchPending: state.searchPending,
+        result: state.result
     }
 })(App);
 
 
 export interface LoginFormProps {
     requestPending: boolean;
-    auth: any;
+    client: Client;
 }
 
 export interface LoginFormState {
@@ -117,7 +127,7 @@ class LoginForm extends Component<LoginFormProps, LoginFormState> {
 
         console.log(this.state);
 
-        this.props.auth.signin(this.state.email, this.state.password);
+        this.props.client.signin(this.state.email, this.state.password);
     }
 
     onEmailChanged(event) {
@@ -148,7 +158,7 @@ class LoginForm extends Component<LoginFormProps, LoginFormState> {
 export const LoginFormConnected = connect(state => {
 
     return {
-        requestPending: state.intake24.auth.signinRequestPending
+        requestPending: state.intake24.client.signinRequestPending
     }
 })(LoginForm);
 
@@ -156,8 +166,8 @@ export const LoginFormConnected = connect(state => {
 ReactDOM.render(
     <Provider store={store}>
         <div>
-            <LoginFormConnected auth={Toolbox.auth}/>
-            <AppConnected foodSearch={Toolbox.foodSearch}/>
+            <LoginFormConnected client={intakeClient}/>
+            <AppConnected foodSearch={foodSearch}/>
         </div>
     </Provider>,
     document.getElementById('root')
