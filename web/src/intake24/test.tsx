@@ -33,7 +33,7 @@ let store = createStore(
 
 let intakeClient = new Client(store, ["intake24", "client"]);
 
-intakeClient.init("http://localhost:9001");
+intakeClient.setApiBaseUrl("http://localhost:9001");
 intakeClient.setRefreshToken(key);
 
 let foodSearch = new FoodSearch(store, intakeClient, ["intake24", "foodSearch"]);
