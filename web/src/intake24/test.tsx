@@ -6,10 +6,10 @@ import {Router, Route} from "react-router";
 import {ConnectedRouter, routerReducer, routerMiddleware, push} from "react-router-redux";
 import createHistory from 'history/createBrowserHistory'
 
-import {Client, FoodSearch, ClientReducer, FoodSearchReducer, LookupResult} from "intake24-redux-client";
+import {Client, FoodSearch, ClientReducer, FoodSearchReducer, LookupResult, FoodNutrientsCalculator, FNCReducer} from "intake24-redux-client";
 import {Component} from "react";
 
-let key = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJleUp3Y205MmFXUmxja2xFSWpvaVpXMWhhV3dpTENKd2NtOTJhV1JsY2t0bGVTSTZJbUZ3YVRGQVpHa3RkR1Z6ZEM1amIyMGlmUT09IiwiaXNzIjoiaW50YWtlMjQiLCJleHAiOjE2NzA3NzE4MzYsInR5cGUiOiJyZWZyZXNoIiwiaWF0IjoxNTEzMDkxODM2LCJ1c2VySWQiOjE4MTMxLCJqdGkiOiJjMTc3ODliZTE4ZmJiMjlhNWVjYWVjODk3MjViMWVjNjdkNzdkZTIzYzM4YWM2YWNkMDI1ZTJjMjFjODQ0OWE0MWRiODM2MDI3YzNkNjYyNjA5MDU2ZTY1NDdkYTQ3MjlkYzJlMmVmNWUxODMwMWEzYzNhYjExMzYxM2ZlYWU1MjU4ZWFiYjNlZjlhNWRjMzZiZjA2YTQ4YzM5MzA5YjgwYWE5YzkzODdiYjdiNGE1YjczODZiYzEzYWY5ZjkyMDNhNDA4ZWNhMjZiM2Q1N2E1MzYzMjYxODNkMjIwMmY3NTA1NmYwYzQ2M2VmZWJlNTMwMmU5ZDRkNmM1MTZhMGE4In0._hxZfuK-pQHxJR8CTEdqygEa9sW27cVynaULa3Gsu1I"
+let key = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJleUp3Y205MmFXUmxja2xFSWpvaVpXMWhhV3dpTENKd2NtOTJhV1JsY2t0bGVTSTZJbWwyWVc0dWNHOXNhV0ZyYjNaQWJtTnNMbUZqTG5WckluMD0iLCJpc3MiOiJpbnRha2UyNCIsImV4cCI6MTY3MTgxNzY5MSwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE1MTQxMzc2OTEsInVzZXJJZCI6MTgxNjgsImp0aSI6ImUyZjZjNDAxZDI0OGUwZTI2NDNiNGNiZTc5ZjZlNjBkOTM5MWEwMThjZjc5ZmUyNDkwN2Q0YmZiOTliNDk1ZGUwYmYwMzc3NzkyZTA5Yjk5ZGMyYWVmNWNkZTMxZjY3N2QyNmQ2NmJkOWUyYTYyZTUyNDZiZWUxZmY4M2E2ODg2MmZhZTg0Njg4OTU4Y2UyNWZlMWRjOWVmZTNkYTQ5MGUyM2IyMmQ5NWNjYzA1YjAxZDdmZGE1MWQwNDQzNzU4NTQwMTg3NTkxYjUwMTYxM2FjNDFmOWExMWMwMDI3NTg4M2M2ZGJmMzNhZGNlNzkxMTkxYzc5NDdjZjg1MGRjMzEifQ.GnsTzFZrqtupkJa7W7EgMy0aBgqVgtmsLpWUiATkFRw"
 
 let history = createHistory();
 
@@ -22,7 +22,7 @@ let store = createStore(
         router: routerReducer,
         intake24: combineReducers({
                 "client": ClientReducer.create(),
-                "foodSearch": FoodSearchReducer.create()
+                "foodNutrientsCalculator": FNCReducer.create()
             }
         )
     }),
@@ -36,7 +36,10 @@ let intakeClient = new Client(store, ["intake24", "client"]);
 intakeClient.setApiBaseUrl("http://localhost:9001");
 intakeClient.setRefreshToken(key);
 
-let foodSearch = new FoodSearch(store, intakeClient, ["intake24", "foodSearch"]);
+
+let fnc = new FoodNutrientsCalculator(store, intakeClient, ["intake24", "foodNutrientsCalculator"]);
+
+let foodSearch = fnc.foodSearch;
 
 export interface AppProps {
     foodSearch: FoodSearch;
