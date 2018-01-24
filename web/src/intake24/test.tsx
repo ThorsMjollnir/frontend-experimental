@@ -8,8 +8,17 @@ import {Router, Route} from "react-router";
 import {ConnectedRouter, routerReducer, routerMiddleware, push} from "react-router-redux";
 import createHistory from 'history/createBrowserHistory'
 
-import {Client, FoodSearch, ClientReducer, FoodSearchReducer, LookupResult, FoodNutrientsCalculator, FNCReducer} from "intake24-redux-client";
+import {
+    Client,
+    FoodSearch,
+    ClientReducer,
+    LookupResult,
+    FoodNutrientsCalculator as FNC,
+    FNCReducer
+} from "intake24-redux-client";
 import {Component} from "react";
+import {LoginFormConnected} from "./LoginForm";
+import {FoodNutrientsCalculatorContainer} from "./FoodNutrientsCalculator";
 
 
 let history = createHistory();
@@ -37,8 +46,19 @@ let intakeClient = new Client(store, ["intake24", "client"]);
 intakeClient.setApiBaseUrl(LocalConfig.apiBaseUrl);
 intakeClient.setRefreshToken(LocalConfig.refreshToken);
 
+let fnc = new FNC(store, intakeClient, ["intake24", "foodNutrientsCalculator"]);
 
-let fnc = new FoodNutrientsCalculator(store, intakeClient, ["intake24", "foodNutrientsCalculator"]);
+
+ReactDOM.render(
+    <Provider store={store}>
+        <div>
+            <FoodNutrientsCalculatorContainer intakeClient={intakeClient} foodNutrientsCalculator={fnc}/>
+        </div>
+    </Provider>,
+    document.getElementById('root')
+);
+
+/*
 
 let foodSearch = fnc.foodSearch;
 
@@ -113,64 +133,4 @@ export const AppConnected = connect(s => {
 })(App);
 
 
-export interface LoginFormProps {
-    requestPending: boolean;
-    client: Client;
-}
-
-export interface LoginFormState {
-    email: string;
-    password: string;
-}
-
-class LoginForm extends Component<LoginFormProps, LoginFormState> {
-
-    constructor(props) {
-        super(props);
-
-        this.state = {email: "", password: ""};
-    }
-
-    onSigninClicked() {
-        this.props.client.signin(this.state.email, this.state.password);
-    }
-
-    onEmailChanged(event) {
-        this.setState({email: event.target.value});
-    }
-
-    onPasswordChanged(event) {
-        this.setState({password: event.target.value});
-    }
-
-    render() {
-
-        return <div>
-            E-mail: <input type="text" value={this.state.email}
-                           onChange={this.onEmailChanged.bind(this)}/>
-            Password: <input type="text" value={this.state.password}
-                             onChange={this.onPasswordChanged.bind(this)}/>
-            <input disabled={this.props.requestPending} type="button" value="Sign in"
-                   onClick={this.onSigninClicked.bind(this)}/>
-        </div>
-    }
-}
-
-export const LoginFormConnected = connect(state => {
-
-    return {
-        requestPending: state.intake24.client.signinRequestPending
-    }
-})(LoginForm);
-
-
-ReactDOM.render(
-    <Provider store={store}>
-        <div>
-            <LoginFormConnected client={intakeClient}/>
-            <AppConnected foodSearch={foodSearch}/>
-        </div>
-    </Provider>,
-    document.getElementById('root')
-);
-
+*/
