@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "bootstrap": "v4.0.0-beta",
-    "jquery": "3.2.x",
+    "jquery": "3.5.x",
     "popper.js": "^1.12.9",
     "portfinder": "^1.0.13",
     "react": "^15.6.2",
